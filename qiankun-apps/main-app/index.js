@@ -15,7 +15,7 @@ import render from './render/ReactRender';
 /**
  * Step1 初始化应用（可选）
  */
-render({ loading: true });
+render({ loading: false });
 
 /**
  * Step2 注册子应用

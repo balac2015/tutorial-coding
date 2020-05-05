@@ -600,23 +600,24 @@ exports.getAppStatus = jt;
 exports.getMountedApps = Nt;
 exports.mountRootParcel = Q;
 exports.navigateToUrl = st;
+exports.pathToActiveWhen = Gt;
 exports.registerApplication = Dt;
 exports.removeErrorHandler = f;
 exports.setBootstrapMaxTime = Y;
 exports.setMountMaxTime = Z;
 exports.setUnloadMaxTime = nt;
 exports.setUnmountMaxTime = tt;
-exports.start = kt;
-exports.triggerAppChange = Ct;
+exports.start = Jt;
+exports.triggerAppChange = $t;
 exports.unloadApplication = Rt;
 exports.UPDATING = exports.UNMOUNTING = exports.SKIP_BECAUSE_BROKEN = exports.NOT_MOUNTED = exports.NOT_LOADED = exports.NOT_BOOTSTRAPPED = exports.MOUNTING = exports.MOUNTED = exports.LOAD_ERROR = exports.LOADING_SOURCE_CODE = exports.BOOTSTRAPPING = void 0;
 
-/* single-spa@5.3.4 - ESM - prod */
+/* single-spa@5.4.0 - ESM - prod */
 var t = Object.freeze({
   __proto__: null,
 
   get start() {
-    return kt;
+    return Jt;
   },
 
   get ensureJQuerySupport() {
@@ -663,12 +664,16 @@ var t = Object.freeze({
     return _t;
   },
 
+  get pathToActiveWhen() {
+    return Gt;
+  },
+
   get navigateToUrl() {
     return st;
   },
 
   get triggerAppChange() {
-    return Ct;
+    return $t;
   },
 
   get addErrorHandler() {
@@ -712,7 +717,7 @@ var t = Object.freeze({
   },
 
   get LOAD_ERROR() {
-    return b;
+    return O;
   },
 
   get MOUNTED() {
@@ -720,7 +725,7 @@ var t = Object.freeze({
   },
 
   get UNMOUNTING() {
-    return O;
+    return b;
   },
 
   get SKIP_BECAUSE_BROKEN() {
@@ -851,12 +856,12 @@ var h = "NOT_LOADED",
     g = "MOUNTING",
     y = "MOUNTED",
     E = "UPDATING",
-    O = "UNMOUNTING",
-    b = "LOAD_ERROR",
+    b = "UNMOUNTING",
+    O = "LOAD_ERROR",
     P = "SKIP_BECAUSE_BROKEN";
 exports.SKIP_BECAUSE_BROKEN = P;
-exports.LOAD_ERROR = b;
-exports.UNMOUNTING = O;
+exports.LOAD_ERROR = O;
+exports.UNMOUNTING = b;
 exports.UPDATING = E;
 exports.MOUNTED = y;
 exports.MOUNTING = g;
@@ -875,7 +880,7 @@ function A(t) {
 }
 
 function S(t) {
-  return t.status !== h && t.status !== m && t.status !== b;
+  return t.status !== h && t.status !== m && t.status !== O;
 }
 
 function N(t) {
@@ -886,16 +891,12 @@ function _(t) {
   try {
     return t.activeWhen(window.location);
   } catch (n) {
-    c(n, t, P);
+    return c(n, t, P), !1;
   }
 }
 
 function j(t) {
-  try {
-    return !_(t);
-  } catch (n) {
-    c(n, t, P);
-  }
+  return !_(t);
 }
 
 function D(t) {
@@ -903,7 +904,7 @@ function D(t) {
 }
 
 function M(t) {
-  return t.status !== b || new Date().getTime() - t.loadErrorTime >= 200;
+  return t.status !== O || new Date().getTime() - t.loadErrorTime >= 200;
 }
 
 function U(t) {
@@ -972,7 +973,7 @@ function W(t, n) {
 function $(t, n) {
   return Promise.resolve().then(function () {
     if (t.status !== y) return t;
-    t.status = O;
+    t.status = b;
     var r = Object.keys(t.parcels).map(function (n) {
       return t.parcels[n].unmountThisParcel();
     });
@@ -1086,7 +1087,7 @@ function V(t, r) {
       g = v.then(function () {
     return F(c, !0);
   }),
-      O = new Promise(function (t, n) {
+      b = new Promise(function (t, n) {
     f = t, h = n;
   });
   return o = {
@@ -1105,7 +1106,7 @@ function V(t, r) {
     loadPromise: q(s),
     bootstrapPromise: q(v),
     mountPromise: q(g),
-    unmountPromise: q(O)
+    unmountPromise: q(b)
   };
 }
 
@@ -1115,13 +1116,16 @@ function q(t) {
   });
 }
 
-function z(n) {
-  var r = R({}, n.customProps, {
-    name: U(n),
-    mountParcel: V.bind(n),
+function z(r) {
+  var e = U(r),
+      o = "function" == typeof r.customProps ? r.customProps(e, window.location) : r.customProps;
+  ("object" !== n(o) || null === o || Array.isArray(o)) && (o = {}, console.warn(l(40, !1), e, o));
+  var i = R({}, o, {
+    name: e,
+    mountParcel: V.bind(r),
     singleSpa: t
   });
-  return L(n) && (r.unmountSelf = n.unmountThisParcel), r;
+  return L(r) && (i.unmountSelf = r.unmountThisParcel), i;
 }
 
 var X = {
@@ -1228,7 +1232,7 @@ function et(t) {
 
 function ot(t) {
   return Promise.resolve().then(function () {
-    return t.loadPromise ? t.loadPromise : t.status !== h && t.status !== b ? t : (t.status = m, t.loadPromise = Promise.resolve().then(function () {
+    return t.loadPromise ? t.loadPromise : t.status !== h && t.status !== O ? t : (t.status = m, t.loadPromise = Promise.resolve().then(function () {
       var o = t.loadApp(z(t));
       if (!C(o)) throw e = !0, Error(l(33, !1, U(t)));
       return o.then(function (e) {
@@ -1250,7 +1254,7 @@ function ot(t) {
       });
     }).catch(function (n) {
       var r;
-      return delete t.loadPromise, e ? r = P : (r = b, t.loadErrorTime = new Date().getTime()), c(n, t, r), t;
+      return delete t.loadPromise, e ? r = P : (r = O, t.loadErrorTime = new Date().getTime()), c(n, t, r), t;
     }));
     var r, e;
   });
@@ -1293,44 +1297,47 @@ function ft(t) {
 }
 
 function lt() {
-  Wt([], arguments);
+  kt([], arguments);
+}
+
+function pt(t, n) {
+  return function () {
+    var r = window.location.href,
+        e = t.apply(this, arguments),
+        o = window.location.href;
+    return it && r === o || lt(ht(window.history.state, n)), e;
+  };
+}
+
+function ht(t, n) {
+  var r;
+
+  try {
+    r = new PopStateEvent("popstate", {
+      state: t
+    });
+  } catch (n) {
+    (r = document.createEvent("PopStateEvent")).initPopStateEvent("popstate", !1, !1, t);
+  }
+
+  return r.singleSpa = !0, r.singleSpaTrigger = n, r;
 }
 
 if (ut) {
-  let mt = function (t) {
-    return function () {
-      var n = window.location.href,
-          r = t.apply(this, arguments),
-          e = window.location.href;
-      return it && n === e || lt(dt(window.history.state)), r;
-    };
-  };
-
-  let dt = function (t) {
-    try {
-      return new PopStateEvent("popstate", {
-        state: t
-      });
-    } catch (r) {
-      var n = document.createEvent("PopStateEvent");
-      return n.initPopStateEvent("popstate", !1, !1, t), n;
-    }
-  };
-
   window.addEventListener("hashchange", lt), window.addEventListener("popstate", lt);
-  var pt = window.addEventListener,
-      ht = window.removeEventListener;
+  var mt = window.addEventListener,
+      dt = window.removeEventListener;
   window.addEventListener = function (t, n) {
     if (!("function" == typeof n && ct.indexOf(t) >= 0) || x(at[t], function (t) {
       return t === n;
-    })) return pt.apply(this, arguments);
+    })) return mt.apply(this, arguments);
     at[t].push(n);
   }, window.removeEventListener = function (t, n) {
-    if (!("function" == typeof n && ct.indexOf(t) >= 0)) return ht.apply(this, arguments);
+    if (!("function" == typeof n && ct.indexOf(t) >= 0)) return dt.apply(this, arguments);
     at[t] = at[t].filter(function (t) {
       return t !== n;
     });
-  }, window.history.pushState = mt(window.history.pushState), window.history.replaceState = mt(window.history.replaceState), window.singleSpaNavigate = st;
+  }, window.history.pushState = pt(window.history.pushState, "pushState"), window.history.replaceState = pt(window.history.replaceState, "replaceState"), window.singleSpaNavigate = st;
 }
 
 function vt(t) {
@@ -1362,13 +1369,13 @@ function yt(t, n, r, e, o) {
 
 var Et = {};
 
-function Ot(t) {
+function bt(t) {
   return Promise.resolve().then(function () {
     var n = Et[U(t)];
-    return n ? t.status === h ? (bt(t, n), t) : "UNLOADING" === t.status ? n.promise.then(function () {
+    return n ? t.status === h ? (Ot(t, n), t) : "UNLOADING" === t.status ? n.promise.then(function () {
       return t;
     }) : t.status !== w ? t : (t.status = "UNLOADING", rt(t, "unload").then(function () {
-      return bt(t, n), t;
+      return Ot(t, n), t;
     }).catch(function (r) {
       return function (t, n, r) {
         delete Et[U(t)], delete t.bootstrap, delete t.mount, delete t.unmount, delete t.unload, c(r, t, P), n.reject(r);
@@ -1377,7 +1384,7 @@ function Ot(t) {
   });
 }
 
-function bt(t, n) {
+function Ot(t, n) {
   delete Et[U(t)], delete t.bootstrap, delete t.mount, delete t.unmount, delete t.unload, t.status = h, n.resolve();
 }
 
@@ -1442,12 +1449,12 @@ function Dt(t, r, e, o) {
       };
 
       if (!(o(t.activeWhen) || Array.isArray(t.activeWhen) && t.activeWhen.every(o))) throw Error(l(24, !1));
-      if (t.customProps && ("object" !== n(t.customProps) || Array.isArray(t.customProps))) throw Error(l(22, !1));
-    }(t), u.name = t.name, u.loadApp = t.app, u.activeWhen = t.activeWhen, u.customProps = t.customProps) : (function (t, r, e, o) {
+      if (!Bt(t.customProps)) throw Error(l(22, !1));
+    }(t), u.name = t.name, u.loadApp = t.app, u.activeWhen = t.activeWhen, u.customProps = t.customProps) : (function (t, n, r, e) {
       if ("string" != typeof t || 0 === t.length) throw Error(l(20, !1));
-      if (!r) throw Error(l(23, !1));
-      if ("function" != typeof e) throw Error(l(24, !1));
-      if (o && ("object" !== n(o) || Array.isArray(o))) throw Error(l(22, !1));
+      if (!n) throw Error(l(23, !1));
+      if ("function" != typeof r) throw Error(l(24, !1));
+      if (!Bt(e)) throw Error(l(22, !1));
     }(t, r, e, o), u.name = t, u.loadApp = r, u.activeWhen = e, u.customProps = o), u.loadApp = "function" != typeof (i = u.loadApp) ? function () {
       return Promise.resolve(i);
     } : i, u.customProps = function (t) {
@@ -1455,23 +1462,7 @@ function Dt(t, r, e, o) {
     }(u.customProps), u.activeWhen = function (t) {
       var n = Array.isArray(t) ? t : [t];
       return n = n.map(function (t) {
-        return "function" == typeof t ? t : (n = function (t) {
-          for (var n = 0, r = !1, e = "^", o = 0; o < t.length; o++) {
-            var i = t[o];
-            (!r && ":" === i || r && "/" === i) && u(o);
-          }
-
-          return u(t.length), new RegExp(e, "i");
-
-          function u(o) {
-            var i = t.slice(n, o).replace(/[|\\{}()[\]^$+*?.]/g, "\\$&");
-            e += r ? "[^/]+/?" : i, r = !r, n = o;
-          }
-        }(t), function (t) {
-          var r = t.href.replace(t.origin, "");
-          return n.test(r);
-        });
-        var n;
+        return "function" == typeof t ? t : Gt(t);
       }), function (t) {
         return n.some(function (n) {
           return n(t);
@@ -1491,7 +1482,7 @@ function Dt(t, r, e, o) {
         selectors: []
       }
     }
-  }, i)), ut && (gt(), Wt());
+  }, i)), ut && (gt(), kt());
 }
 
 function Mt(t) {
@@ -1542,32 +1533,57 @@ function Rt(t) {
 }
 
 function xt(t, n, r) {
-  $(t).then(Ot).then(function () {
+  $(t).then(bt).then(function () {
     n(), setTimeout(function () {
-      Wt();
+      kt();
     });
   }).catch(r);
 }
 
-var Bt = !1,
-    Gt = [];
-
-function Ct() {
-  return Wt();
+function Bt(t) {
+  return !t || "function" == typeof t || "object" === n(t) && null !== t && !Array.isArray(t);
 }
 
-function Wt() {
+function Gt(t) {
+  var n = function (t) {
+    for (var n = 0, r = !1, e = "^", o = 0; o < t.length; o++) {
+      var i = t[o];
+      (!r && ":" === i || r && "/" === i) && u(o);
+    }
+
+    return u(t.length), new RegExp(e, "i");
+
+    function u(o) {
+      var i = t.slice(n, o).replace(/[|\\{}()[\]^$+*?.]/g, "\\$&");
+      e += r ? "[^/]+/?" : i, r = !r, n = o;
+    }
+  }(t);
+
+  return function (t) {
+    var r = t.href.replace(t.origin, "");
+    return n.test(r);
+  };
+}
+
+var Ct = !1,
+    Wt = [];
+
+function $t() {
+  return kt();
+}
+
+function kt() {
   var t = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : [],
       n = arguments.length > 1 ? arguments[1] : void 0;
-  if (Bt) return new Promise(function (t, r) {
-    Gt.push({
+  if (Ct) return new Promise(function (t, r) {
+    Wt.push({
       resolve: t,
       reject: r,
       eventArguments: n
     });
   });
   var o = [];
-  return Kt() ? (Bt = !0, c()) : a();
+  return Ht() ? (Ct = !0, c()) : a();
 
   function i(t) {
     return o.push.apply(o, e(t)), t;
@@ -1587,27 +1603,24 @@ function Wt() {
   function c() {
     return Promise.resolve().then(function () {
       window.dispatchEvent(new u("single-spa:before-routing-event", l()));
-      var n = i(At()).map(Ot),
+      var n = i(At()).map(bt),
           r = i(Lt()).map($).map(function (t) {
-        return t.then(Ot);
+        return t.then(bt);
       }).concat(n),
-          e = Promise.all(r),
-          a = i(Ut()),
+          e = Promise.all(r);
+      e.then(function () {
+        window.dispatchEvent(new u("single-spa:before-mount-routing-event", l()));
+      });
+      var a = i(Ut()),
           c = a.map(function (t) {
-        return ot(t).then(W).then(function (t) {
-          return e.then(function () {
-            return F(t);
-          });
+        return ot(t).then(function (t) {
+          return Kt(t, e);
         });
       }),
           p = It().filter(function (t) {
         return a.indexOf(t) < 0;
       }).map(function (t) {
-        return o.push(t), W(t).then(function () {
-          return e;
-        }).then(function () {
-          return F(t);
-        });
+        return o.push(t), Kt(t, e);
       });
       return e.catch(function (t) {
         throw f(), t;
@@ -1636,9 +1649,9 @@ function Wt() {
       });
     }
 
-    if (Bt = !1, Gt.length > 0) {
-      var e = Gt;
-      Gt = [], Wt(e);
+    if (Ct = !1, Wt.length > 0) {
+      var e = Wt;
+      Wt = [], kt(e);
     }
 
     return n;
@@ -1669,25 +1682,35 @@ function Wt() {
   }
 }
 
-var $t = !1;
-
-function kt(t) {
-  var n;
-  $t = !0, t && t.urlRerouteOnly && (n = t.urlRerouteOnly, it = n), ut && Wt();
+function Kt(t, n) {
+  return _(t) ? W(t).then(function (t) {
+    return n.then(function () {
+      return _(t) ? F(t) : t;
+    });
+  }) : n.then(function () {
+    return t;
+  });
 }
 
-function Kt() {
-  return $t;
+var Ft = !1;
+
+function Jt(t) {
+  var n;
+  Ft = !0, t && t.urlRerouteOnly && (n = t.urlRerouteOnly, it = n), ut && kt();
+}
+
+function Ht() {
+  return Ft;
 }
 
 ut && setTimeout(function () {
-  $t || console.warn(l(1, !1));
+  Ft || console.warn(l(1, !1));
 }, 5e3);
-var Ft = {
+var Qt = {
   getRawAppData: function () {
     return [].concat(St);
   },
-  reroute: Wt,
+  reroute: kt,
   NOT_LOADED: h,
   toLoadPromise: ot,
   toBootstrapPromise: W,
@@ -1703,7 +1726,7 @@ var Ft = {
     });
   }
 };
-ut && window.__SINGLE_SPA_DEVTOOLS__ && (window.__SINGLE_SPA_DEVTOOLS__.exposedMethods = Ft);
+ut && window.__SINGLE_SPA_DEVTOOLS__ && (window.__SINGLE_SPA_DEVTOOLS__.exposedMethods = Qt);
 },{}],"node_modules/qiankun/node_modules/lodash/_arrayPush.js":[function(require,module,exports) {
 /**
  * Appends the elements of `values` to `array`.
@@ -41371,7 +41394,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * Step1 初始化应用（可选）
  */
 (0, _ReactRender.default)({
-  loading: true
+  loading: false
 });
 /**
  * Step2 注册子应用
@@ -41476,7 +41499,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61185" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55186" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
